@@ -7,6 +7,8 @@ from personagem_bat import *
 from cronometro import Cronometro
 import math
 from ataque_distancia import Ataque_distancia
+from spritesheet import Spritesheet
+from tiles import *
 
 class CenaPrincipal:
     def __init__(self, tela, indice1, indice2):
@@ -16,6 +18,8 @@ class CenaPrincipal:
         self.cd = Cronometro()
         '''self.estado = EstadoJogo()'''
         self.font = pg.font.SysFont(None, 48)
+        self.spritesheet = Spritesheet('owlishmedia_pixel_tiles.png')
+        self.map = Tilemap('1mapa.csv', self.spritesheet)
         
         py = ConfigJogo.ALTURA_TELA // 2 - ConfigJogo.ALTURA_P // 2
         px_esq = ConfigJogo.POS_X1
@@ -152,7 +156,7 @@ class CenaPrincipal:
         tela.blit(img, (px, py))
 
     def desenha(self):
-        self.tela.fill((255, 255, 255))
+        self.map.draw_map(self.tela)
 
         if self.gambiarra == 1:
             pg.draw.circle(self.tela,
@@ -164,7 +168,9 @@ class CenaPrincipal:
         self.desenha_tempo(self.tela)
         self.player2.desenha(self.tela)
         self.player1.desenha(self.tela)
-                
+        
+        pg.display.flip()
+
 
         if pg.key.get_pressed()[pg.K_q]:
             self.player1.classe1.ataque_normal(self.tela,self.player1,self.player2)
@@ -218,7 +224,6 @@ class CenaPrincipal:
             elif self.player2.direcao == 1:
                 self.player2.sprite_atual = self.player2.sprite_esquerda
 
-        pg.display.flip()
 
     def jogo_terminou(self):
         if (self.player1.vida <= 0) or \
